@@ -1,4 +1,5 @@
 import { Component } from "react/cjs/react.production.min";
+
 import "./employees-add-form.css";
 
 class EmployeesAddForm extends Component {
@@ -17,7 +18,8 @@ class EmployeesAddForm extends Component {
   };
 
   render() {
-    const { name, salary } = this.props;
+    const { name, salary, createEmployee } = this.props;
+    const { name: nameValue, salary: salaryValue } = this.state;
 
     return (
       <div className="app-add-form">
@@ -40,7 +42,15 @@ class EmployeesAddForm extends Component {
             onChange={this.onInputsChange}
           />
 
-          <button type="submit" className="btn btn-outline-light">
+          <button
+            type="submit"
+            className="btn btn-outline-light"
+            onClick={(e) => {
+              e.preventDefault();
+              createEmployee(nameValue, salaryValue);
+              document.querySelector("form").reset();
+            }}
+          >
             Добавить
           </button>
         </form>
