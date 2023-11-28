@@ -10,15 +10,20 @@ class EmployeesList extends Component {
   }
 
   render() {
-    const { data, removeEmployee } = this.props;
+    const { data, removeEmployee, onToggleProp } = this.props;
 
     let elements = data.map((item) => {
       return (
         <EmployeesListItem
           name={item.name}
           salary={item.salary}
+          increase={item.increase}
+          rise={item.rise}
           key={item.id}
           removeEmployee={() => removeEmployee(item.id)}
+          onToggleProp={(e) =>
+            onToggleProp(item.id, e.currentTarget.getAttribute("data-toggle"))
+          }
         />
       );
     });

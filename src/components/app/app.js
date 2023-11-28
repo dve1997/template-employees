@@ -13,13 +13,31 @@ class App extends Component {
     super(props);
     this.state = {
       dataEmpl: [
-        { name: "Denisov V.", salary: 1000, id: 1 },
-        { name: "Denisova D.", salary: 1500, id: 2 },
-        { name: "Zalaldinov O.", salary: 2000, id: 3 },
-        { name: "Zalaldinova V.", salary: 2500, id: 4 },
+        { name: "Denisov V.", salary: 1000, increase: true, rise: true, id: 1 },
+        {
+          name: "Denisova D.",
+          salary: 1500,
+          increase: false,
+          rise: false,
+          id: 2,
+        },
+        {
+          name: "Zalaldinov O.",
+          salary: 2000,
+          increase: false,
+          rise: false,
+          id: 3,
+        },
+        {
+          name: "Zalaldinova V.",
+          salary: 2500,
+          increase: false,
+          rise: false,
+          id: 4,
+        },
       ],
     };
-    this.counter = 10;
+    this.idEmpl = 10;
   }
 
   removeEmployee = (id) => {
@@ -32,22 +50,51 @@ class App extends Component {
     let employee = {
       name: name,
       salary: +salary,
-      id: this.counter,
+      id: this.idEmpl,
     };
-    this.counter++;
+    this.idEmpl++;
 
     this.setState(({ dataEmpl }) => {
       const arr = [...dataEmpl];
-      arr.push(employee);
+
+      if (employee.name && employee.salary) {
+        arr.push(employee);
+      } else if (!document.querySelector(".error")) {
+        const error = document.createElement("div");
+        error.innerHTML = `Заполните поля`;
+        error.classList.add("error");
+        error.style.marginLeft = "20px";
+        document.querySelector("form").append(error);
+        setTimeout(() => error.remove(), 3000);
+      }
 
       return { dataEmpl: arr };
     });
   };
 
+  onToggleProp = (id, prop) => {
+    this.setState(({ dataEmpl }) => ({
+      dataEmpl: dataEmpl.map((item) => {
+        if (item.id === id) {
+          return { ...item, [prop]: !item[prop] };
+        }
+        return item;
+      }),
+    }));
+  };
+
   render() {
+    const qauntityEmpl = this.state.dataEmpl.length;
+    const qauntityEmplIncrease = this.state.dataEmpl.filter(
+      (item) => item.increase === true
+    ).length;
+
     return (
       <div className="app">
-        <AppInfo />
+        <AppInfo
+          qauntityEmpl={qauntityEmpl}
+          qauntityEmplIncrease={qauntityEmplIncrease}
+        />
 
         <div className="search-panel">
           <SearchPanel />
@@ -57,6 +104,7 @@ class App extends Component {
         <EmployeesList
           data={this.state.dataEmpl}
           removeEmployee={this.removeEmployee}
+          onToggleProp={this.onToggleProp}
         />
         <EmployeesAddForm createEmployee={this.createEmployee} />
       </div>
