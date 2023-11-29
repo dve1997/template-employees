@@ -18,7 +18,7 @@ class EmployeesAddForm extends Component {
   };
 
   render() {
-    const { name, salary, createEmployee } = this.props;
+    const { name, salary, onCreateEmployee } = this.props;
     const { name: nameValue, salary: salaryValue } = this.state;
 
     return (
@@ -47,7 +47,7 @@ class EmployeesAddForm extends Component {
             className="btn btn-outline-light"
             onClick={(e) => {
               e.preventDefault();
-              createEmployee(nameValue, salaryValue);
+              onCreateEmployee(nameValue, salaryValue);
               document.querySelector("form").reset();
             }}
           >

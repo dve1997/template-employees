@@ -17,8 +17,8 @@ class App extends Component {
         {
           name: "Denisova D.",
           salary: 1500,
-          increase: false,
-          rise: false,
+          increase: true,
+          rise: true,
           id: 2,
         },
         {
@@ -36,17 +36,19 @@ class App extends Component {
           id: 4,
         },
       ],
+      term: "",
+      activeBtn: "all",
     };
     this.idEmpl = 10;
   }
 
-  removeEmployee = (id) => {
+  onRemoveEmployee = (id) => {
     this.setState(({ dataEmpl }) => {
       return { dataEmpl: dataEmpl.filter((item) => item.id !== id) };
     });
   };
 
-  createEmployee = (name, salary) => {
+  onCreateEmployee = (name, salary) => {
     let employee = {
       name: name,
       salary: +salary,
@@ -83,11 +85,65 @@ class App extends Component {
     }));
   };
 
+  onSearchEmpl = (items, term, activeBtn) => {
+    if (term.length === 0 && activeBtn === "all") {
+      return items;
+    }
+
+    if (term.length === 0 && activeBtn === "rise") {
+      return items.filter((item) => {
+        return item.rise === true;
+      });
+    }
+
+    if (term.length === 0 && activeBtn === "more") {
+      return items.filter((item) => {
+        return item.salary > 1000;
+      });
+    }
+
+    if (term.length !== 0 && activeBtn === "all") {
+      return items.filter((item) => {
+        return item.name.includes(term);
+      });
+    }
+
+    if (term.length !== 0 && activeBtn === "rise") {
+      return items.filter((item) => {
+        if (item.name.includes(term) && item.rise === true) {
+          return item;
+        }
+      });
+    }
+
+    if (term.length !== 0 && activeBtn === "more") {
+      return items.filter((item) => {
+        if (item.name.includes(term) && item.salary > 1000) {
+          return item;
+        }
+      });
+    }
+  };
+
+  onSearchTerm = (term) => {
+    this.setState({
+      term: term,
+    });
+  };
+
+  onSearchActiveBtn = (activeBtn) => {
+    this.setState({
+      activeBtn: activeBtn,
+    });
+  };
+
   render() {
+    const { dataEmpl, term, activeBtn } = this.state;
     const qauntityEmpl = this.state.dataEmpl.length;
     const qauntityEmplIncrease = this.state.dataEmpl.filter(
       (item) => item.increase === true
     ).length;
+    const searchEmpl = this.onSearchEmpl(dataEmpl, term, activeBtn);
 
     return (
       <div className="app">
@@ -97,16 +153,16 @@ class App extends Component {
         />
 
         <div className="search-panel">
-          <SearchPanel />
-          <AppFilter />
+          <SearchPanel onSearchTerm={this.onSearchTerm} />
+          <AppFilter onSearchActiveBtn={this.onSearchActiveBtn} />
         </div>
 
         <EmployeesList
-          data={this.state.dataEmpl}
-          removeEmployee={this.removeEmployee}
+          data={searchEmpl}
+          onRemoveEmployee={this.onRemoveEmployee}
           onToggleProp={this.onToggleProp}
         />
-        <EmployeesAddForm createEmployee={this.createEmployee} />
+        <EmployeesAddForm onCreateEmployee={this.onCreateEmployee} />
       </div>
     );
   }

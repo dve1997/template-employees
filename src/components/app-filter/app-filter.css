@@ -1,3 +1,7 @@
 .btn-group {
     margin-top: 20px;
 }
+
+.btn .btn-outline-light.active {
+    background-color: white;
+}
